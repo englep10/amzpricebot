@@ -1,0 +1,35 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+
+    - name: Updates apt cache
+      apt: update_cache=true
+
+    - name: Installs necessary packages
+      apt: pkg={{ item }} state=latest
+      with_items:
+        - python-pip
+        - build-essential
+        - python-dev
+        - git
+        - vim
+        - rabbitmq-server
+        - redis-server
+
+    - name: Install Python packages
+      pip: name={{ item }}
+      with_items:
+        - requests
+        - celery
+        - redis
+        - bpython
+
+    - name: Push celeryd init script
+      copy: src=files/celeryd dest=/etc/init.d/ mode=0777 owner=root group=vagrant
+
+    - name: Push celerybeat init script
+      copy: src=files/celerybeat dest=/etc/init.d/ mode=0777
+
+    - name: Pushes celeryd configuration
+      template: src=templates/celeryd.j2 dest=/etc/default/celeryd mode=0640 owner=root group=vagrant
