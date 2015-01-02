@@ -1,3 +1,4 @@
+watch.yml
 celerybeat-schedule
 *.pyc
 .idea
