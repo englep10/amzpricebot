@@ -28,9 +28,9 @@ Use
 
 From `amzpricebot` directory:
 
-    cp code/example.watch.yml code/watch.yml
+    cp code/example.settings.py code/settings.py
 
-Edit the watch.yml file with your email and the items you wish to watch.  Each section under "watch" contains the name, desired price, and URL.
+Edit the settings.py file with your google email/pwd and the items you wish to watch.  Each section under "watch" contains the name, desired price, and URL.
 When done run:
 
     vagrant ssh
