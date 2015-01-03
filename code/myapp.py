@@ -23,9 +23,10 @@ def queue_price_checks():
     data = yaml.load(stream)[0]
 
     if data:
-        for item in data["watch"]:
+        for count, item in enumerate(data["watch"]):
+            delay = count * 5
             item.update({"email": data["email"]})
-            check_price.delay(item)
+            check_price.apply_async(args=[item], countdown=delay)
 
 @app.task
 def check_price(item):
