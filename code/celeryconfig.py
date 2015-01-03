@@ -7,7 +7,7 @@ CELERY_TIMEZONE = 'UTC'
 
 CELERYBEAT_SCHEDULE = {
     'everymin': {
-      'task': 'myapp.test_beater',
+      'task': 'myapp.queue_price_checks',
       'schedule': timedelta(seconds=60),
     },
 }

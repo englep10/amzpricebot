@@ -1,6 +1,6 @@
 import requests
 import re
-#import json
+import yaml
 from celery import Celery
 import celeryconfig
 
@@ -14,12 +14,28 @@ def test_beater():
     return "I'm testing beat!"
 
 @app.task
+def queue_price_checks():
+    try:
+        stream = open("watch.yml", "r")
+    except IOError:
+        print "error opening watch.yml"
+
+    data = yaml.load(stream)[0]
+
+    if data:
+        for item in data["watch"]:
+            item.update({"email": data["email"]})
+            check_price.delay(item)
+
+@app.task
 def check_price(item):
     data = get_page(item['url'])
     if data:
         price = parse_price(data)
         if price and price <= item["price"]:
             notify_watcher.delay(item, price)
+        else:
+            return "nothing to report here - {0} @ $ {1}".format(item["name"], price)
 
 @app.task
 def notify_watcher(item, price):
@@ -33,7 +49,8 @@ def get_page(url):
 
 def parse_price(data):
     match = re.search(r'<span id="priceblock_ourprice".*>\$(.*)</span>', data)
-    return float(match.group(1)) if match else 0
+    p = str(match.group(1)).replace(",", "")
+    return float(p) if match else 0
 
 
 if __name__ == '__main__':

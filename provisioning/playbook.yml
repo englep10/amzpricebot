@@ -24,6 +24,7 @@
         - celery
         - redis
         - bpython
+        - pyyaml
 
     - name: Push celeryd init script
       copy: src=files/celeryd dest=/etc/init.d/ mode=0777 owner=root group=vagrant
