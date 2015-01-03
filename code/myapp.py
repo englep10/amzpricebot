@@ -48,8 +48,8 @@ def get_page(url):
     return r.text if r.ok else ""
 
 def parse_price(data):
-    match = re.search(r'<span id="priceblock_ourprice".*>\$(.*)</span>', data)
-    p = str(match.group(1)).replace(",", "")
+    match = re.search(r'<span id="priceblock_ourprice".*>(.*)</span>', data)
+    p = re.sub(r'[^\d.]', '', match.group(1))
     return float(p) if match else 0
 
 
